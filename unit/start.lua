@@ -7,7 +7,7 @@ letter_first_row_keys = {"A","Z","E","R","T","Y","U","I","O","P"}
 letter_second_row_keys = {"Q","S","D","F","G","H","J","K","L","M"}
 letter_third_row_keys = {"W","X","C","V","B","N","[","]"}
 
-screen.addContent(0,0,[[<style>.delkey {width:12vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;} .key {width:7vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;}  .key_style {background-color:white;color:black;} .key_hover_style {background-color:black;color:white;} .key_push_style {background-color:white;color:black;} .search_bar {width:98vw;height:10vh;-moz-appearance: textfield;-webkit-appearance: textfield;background-color: white;background-color: -moz-field;border: 1px solid darkgray;box-shadow: 1px 1px 1px 0 lightgray inset;font: -moz-field;font: -webkit-small-control;margin-top: 5px;padding: 2px 3px;color:black;font-size:8vh;}</style>]]) -- Add the CSS
+screen.addContent(0,0,[[<style>.search_result {color:white;font-size:6vh;} .delkey {width:12vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;} .key {width:7vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;}  .key_style {background-color:white;color:black;} .key_hover_style {background-color:black;color:white;} .key_push_style {background-color:white;color:black;} .search_bar {width:98vw;height:10vh;-moz-appearance: textfield;-webkit-appearance: textfield;background-color: white;background-color: -moz-field;border: 1px solid darkgray;box-shadow: 1px 1px 1px 0 lightgray inset;font: -moz-field;font: -webkit-small-control;margin-top: 5px;padding: 2px 3px;color:black;font-size:8vh;}</style>]]) -- Add the CSS
 search_zone = screen.addContent(1,1,[[<div class="search_bar"></div>]])
 ----
 -- Classe
@@ -139,7 +139,7 @@ function ButtonManager.createAdvancedButtonArea(self, screen, x, y, hx, hy, butt
     id_mouseholddown = screen.addContent(x,y,button_mouseholddown)
     screen.showContent(id_mouseholddown, 0) 
     self:createClickableZone(id_button,id_mouseover,id_mouseholddown, x/100, y/100, hx/100, hy/100, function_mouse_up,function_mouse_down,function_mouse_holddown)
-    return id
+    return {id_button,id_mouseover,id_mouseholddown}
 end
 
 ----------------------------------------------------------------------
@@ -219,6 +219,8 @@ function ButtonManager.processMouseOver(self, screen, x, y)
 end
 
 buttonManager = ButtonManager.new()
+buttons_list = {}
+
 
 sorted_container_table = {}
 
@@ -231,18 +233,33 @@ end
 for i,idelem in ipairs(core.getElementIdList()) do
     if core.getElementTypeById(idelem) == "container" then
          table.insert(sorted_container_table, Element.new(idelem,core.getElementNameById(idelem))) 
-    end   
+    end  
 end
 table.sort(sorted_container_table,sortalphabeticaly)
 
 
 function search(name) 
-   foundelemlist = {}
+   --Clear des boutons présent
+   for i,button_id in ipairs(buttons_list) do
+     for j,id in ipairs(idresult) do
+    	buttonManager:deleteButtonArea(screen, id)
+   	end    
+   end 
+    
+   line_pos_x=5
+   line_pos_y = 15
+   key_style = "search_result"
+   key_hover_style = "search_result"
+   key_push_style = "search_result"
    for i,elem in ipairs(sorted_container_table) do
         if string.match(elem.name, name) then
-            table.insert(foundelemlist,elem)
-            system.print(elem.name)
-        end    
+            idresult = buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height,elem.name,key_style,elem.name,key_hover_style,elem.name,key_push_style,function()  end,function() end,function() end)	
+            table.insert(buttons_list,idresult)
+            line_pos_y=line_pos_y+5	
+        end
+        if i>5 then
+            break
+        end
    end     
 end    
 
@@ -264,6 +281,14 @@ function deleteChar()
         nbchar=nbchar-1
         search_string = search_string:sub(1, #search_string - 1)
         screen.resetContent(search_zone,[[<div class="search_bar">]]..search_string..[[</div>]])
+     end 
+     if nbchar<= 2 then
+        --Clear des boutons présent
+           for i,button_id in ipairs(buttons_list) do
+             for j,id in ipairs(idresult) do
+                buttonManager:deleteButtonArea(screen, id)
+            end    
+           end 
      end   
 end
 
