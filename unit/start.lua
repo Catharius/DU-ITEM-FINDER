@@ -9,6 +9,19 @@ letter_third_row_keys = {"W","X","C","V","B","N"}
 
 screen.addContent(0,0,[[<style>.delkey {width:12vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;} .key {width:7vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;}  .key_style {background-color:white;color:black;} .key_hover_style {background-color:black;color:white;} .key_push_style {background-color:white;color:black;} .search_bar {width:98vw;height:10vh;-moz-appearance: textfield;-webkit-appearance: textfield;background-color: white;background-color: -moz-field;border: 1px solid darkgray;box-shadow: 1px 1px 1px 0 lightgray inset;font: -moz-field;font: -webkit-small-control;margin-top: 5px;padding: 2px 3px;color:black;font-size:8vh;}</style>]]) -- Add the CSS
 search_zone = screen.addContent(1,1,[[<div class="search_bar"></div>]])
+----
+-- Classe
+----
+Element = {}
+Element.__index = Element;
+
+function Element.new(elem_id,elem_name)
+    local self = setmetatable({}, Element)
+    self.id = elem_id
+    self.name = elem_name
+    return self
+end
+
 
 
 ----------------------------------------------------------------------
@@ -207,6 +220,26 @@ end
 
 buttonManager = ButtonManager.new()
 
+sorted_container_table = {}
+
+function sortalphabeticaly(a,b)
+    a = core.getElementNameById(a.name)
+    b = core.getElementNameById(b.name)
+    return a < b
+end
+--Triage
+for i,idelem in ipairs(core.getElementIdList()) do
+    if core.getElementTypeById(idelem) == "container" then
+         table.insert(sorted_container_table, Element.new(idelem,core.getElementNameById(idelem))) 
+    end   
+end
+table.sort(sorted_container_table,sortalphabeticaly)
+
+
+function search(name) 
+   system.print("Je recherche "..name) 
+end    
+
 
 nbchar = 0
 search_string = ""
@@ -215,6 +248,9 @@ function updateSearchBar(letter)
     nbchar = nbchar+1
     search_string = search_string..letter
     screen.resetContent(search_zone,[[<div class="search_bar">]]..search_string..[[</div>]])
+    if nbchar>2 then
+        search(search_string)
+    end
 end    
 
 function deleteChar()
@@ -266,13 +302,4 @@ for i,current_key in ipairs(letter_third_row_keys) do
 	line_pos_x=line_pos_x+line_spacing
 end
 
-
-
-
-
---for i,idelem in ipairs(core.getElementIdList()) do
---    if core.getElementTypeById(idelem) == "container" then
---     	html=html..core.getElementNameById(idelem).."<br>" 
---    end   
---end
 screen.activate()
