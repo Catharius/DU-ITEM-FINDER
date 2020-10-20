@@ -5,7 +5,7 @@
 number_keys = {"1","2","3","4","5","6","7","8","9"}
 letter_first_row_keys = {"A","Z","E","R","T","Y","U","I","O","P"}
 letter_second_row_keys = {"Q","S","D","F","G","H","J","K","L","M"}
-letter_third_row_keys = {"W","X","C","V","B","N"}
+letter_third_row_keys = {"W","X","C","V","B","N","[","]"}
 
 screen.addContent(0,0,[[<style>.delkey {width:12vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;} .key {width:7vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;}  .key_style {background-color:white;color:black;} .key_hover_style {background-color:black;color:white;} .key_push_style {background-color:white;color:black;} .search_bar {width:98vw;height:10vh;-moz-appearance: textfield;-webkit-appearance: textfield;background-color: white;background-color: -moz-field;border: 1px solid darkgray;box-shadow: 1px 1px 1px 0 lightgray inset;font: -moz-field;font: -webkit-small-control;margin-top: 5px;padding: 2px 3px;color:black;font-size:8vh;}</style>]]) -- Add the CSS
 search_zone = screen.addContent(1,1,[[<div class="search_bar"></div>]])
@@ -237,7 +237,13 @@ table.sort(sorted_container_table,sortalphabeticaly)
 
 
 function search(name) 
-   system.print("Je recherche "..name) 
+   foundelemlist = {}
+   for i,elem in ipairs(sorted_container_table) do
+        if string.match(elem.name, name) then
+            table.insert(foundelemlist,elem)
+            system.print(elem.name)
+        end    
+   end     
 end    
 
 
@@ -301,5 +307,5 @@ for i,current_key in ipairs(letter_third_row_keys) do
 	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function() updateSearchBar(current_key)  end,function() end,function() end)	
 	line_pos_x=line_pos_x+line_spacing
 end
-
+buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, "","del"..key_style,"","del"..key_hover_style,"","del"..key_push_style,function() updateSearchBar(" ")  end,function() end,function() end)	
 screen.activate()
