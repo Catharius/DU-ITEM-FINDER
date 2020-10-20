@@ -7,17 +7,8 @@ letter_first_row_keys = {"A","Z","E","R","T","Y","U","I","O","P"}
 letter_second_row_keys = {"Q","S","D","F","G","H","J","K","L","M"}
 letter_third_row_keys = {"W","X","C","V","B","N"}
 
-screen.addContent(0,0,[[<style>.key {width:7vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;}  .key_style {background-color:white;color:black;} .key_hover_style {background-color:black;color:white;} .key_push_style {background-color:white;color:black;}</style>]]) -- Add the CSS
-search_zone = screen.addContent(1,1,[[<div style="width:98vw;height:10vh;-moz-appearance: textfield;
-    -webkit-appearance: textfield;
-    background-color: white;
-    background-color: -moz-field;
-    border: 1px solid darkgray;
-    box-shadow: 1px 1px 1px 0 lightgray inset;  
-    font: -moz-field;
-    font: -webkit-small-control;
-    margin-top: 5px;
-    padding: 2px 3px;"></div>]])
+screen.addContent(0,0,[[<style>.key {width:7vw;height:10vh;overflow:hidden;font-size:8vh;text-align:center;}  .key_style {background-color:white;color:black;} .key_hover_style {background-color:black;color:white;} .key_push_style {background-color:white;color:black;} .search_bar {width:98vw;height:10vh;-moz-appearance: textfield;-webkit-appearance: textfield;background-color: white;background-color: -moz-field;border: 1px solid darkgray;box-shadow: 1px 1px 1px 0 lightgray inset;font: -moz-field;font: -webkit-small-control;margin-top: 5px;padding: 2px 3px;color:black;font-size:8vh;}</style>]]) -- Add the CSS
+search_zone = screen.addContent(1,1,[[<div class="search_bar"></div>]])
 
 
 ----------------------------------------------------------------------
@@ -217,6 +208,21 @@ end
 buttonManager = ButtonManager.new()
 
 
+nbchar = 0
+search_string = ""
+-- Search bar
+function updateSearchBar(letter)
+   
+    nbchar = nbchar+1
+    search_string = search_string..letter
+    system.print(search_string)
+    screen.resetContent(search_zone,[[<div class="search_bar">]]..search_string..[[</div>]])
+end    
+
+
+
+
+
 --Création du clavier virtuel
 key_style = "key key_style"
 key_hover_style = "key key_hover_style"
@@ -230,28 +236,28 @@ line_spacing=8
 line_pos_y = 55
 line_pos_x=7
 for i,current_key in ipairs(number_keys) do
-	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function()  end,function() end,function() end)	
+	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function() updateSearchBar(current_key)  end,function() end,function() end)	
 	line_pos_x=line_pos_x+line_spacing
 end
 --Keyboard letter first line
 line_pos_y = 66
 line_pos_x=10
 for i,current_key in ipairs(letter_first_row_keys) do
-	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function()  end,function() end,function() end)	
+	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function() updateSearchBar(current_key)  end,function() end,function() end)	
 	line_pos_x=line_pos_x+line_spacing
 end
 -- Keyboard second line
 line_pos_y = 77
 line_pos_x=12
 for i,current_key in ipairs(letter_second_row_keys) do
-	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function()  end,function() end,function() end)	
+	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function() updateSearchBar(current_key)  end,function() end,function() end)	
 	line_pos_x=line_pos_x+line_spacing
 end
 -- Keyboard third line
 line_pos_y = 88
 line_pos_x=14
 for i,current_key in ipairs(letter_third_row_keys) do
-	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function()  end,function() end,function() end)	
+	buttonManager:createAdvancedButtonArea(screen, line_pos_x, line_pos_y,key_width,key_height, current_key,key_style,current_key,key_hover_style,current_key,key_push_style,function() updateSearchBar(current_key)  end,function() end,function() end)	
 	line_pos_x=line_pos_x+line_spacing
 end
 
