@@ -2,7 +2,7 @@
 for i,idelem in ipairs(core.getElementIdList()) do
     if core.getElementTypeById(idelem) == "container" then
          name = core.getElementNameById(idelem)
-         if not string.match(name, "XX") then
+         if not string.match(name, "EXCLUDE") then
          	table.insert(sorted_container_table, Element.new(idelem,name)) 
          end   
          --table.insert(sorted_container_table, Element.new(idelem,core.getElementNameById(idelem))) 
